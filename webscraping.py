@@ -15,6 +15,15 @@ driver = webdriver.Firefox()
 driver.get(url)
 time.sleep(10)
 
+driver.find_element_by_xpath('//div//*[@id="product_S0002201"]//div[3]').click()
+
+
+element = driver.find_element_by_xpath('//div//*[@id="product_S0002201"]//div[3]')
+html_content = element.get_attribute('outerHTML')
+
+print(html_content)
+
+
 
 
 driver.quit()
