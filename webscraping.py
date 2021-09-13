@@ -1,36 +1,34 @@
-import requests
 from bs4 import BeautifulSoup
-
-res = requests.get("https://storage.googleapis.com/infosimples-output/commercia/case/product.html")
-res.encoding = 'utf-8'
-
-soup = BeautifulSoup(res.text, 'html.parser')
-
-pageRubberDuck = soup.find_all(class_='content') 
+import json
+import requests
 
 
+url = "https://storage.googleapis.com/infosimples-output/commercia/case/product.html"
+res = requests.get(url)
+
+parsed_html = BeautifulSoup(res.content, 'html.parser')
+pageRubberDuck = parsed_html.find_all(class_='content') 
 
 all_pageRubberDuck = []
 for page in pageRubberDuck:
   info = page.find(class_='container')
-  title = info.h2.text
-  brand = info.find(class_='brand')
-  categories = info.find(class_='sku-name')
-  description = info.find(class_='procuct-details')
-  properties = info.find(class_='pure-table pure-table-bordered')
-  rewins = info.find(class_='review-box')
-  eviews_average_score = info.find('//*[@id="comments"]//h4')
-  url = info.find(class_='about')
+  title = parsed_html.select_one('h2#product_title').get_text()
+  brand = parsed_html.select_one('.brand').get_text()
+  categories = parsed_html.select_one('.current-category').get_text()
+  description = parsed_html.select_one('.product-details').get_text()
+  sku = parsed_html.select_one('.skus-area').get_text()
+ 
   all_pageRubberDuck.append({
     'title':title, 
     'brand':brand, 
     'categories':categories,
     'description':description,
-    'properties':properties,
-    'rewins':rewins,
-    'eviews_average_score':eviews_average_score,
-    'url':url,
+    'sku':sku,
     })
-  print(all_pageRubberDuck)
   
+  
+ 
+with open('page.json','w') as json_file:
+  json.dump(all_pageRubberDuck, json_file)
+
  
